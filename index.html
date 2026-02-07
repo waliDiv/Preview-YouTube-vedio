@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 YouTube Videos on One Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff0000, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .url-input-section {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            border: 2px solid #444;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
+        }
+        
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #ff0000, #cc0000);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #cc0000, #aa0000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .video-item {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+        }
+        
+        .video-header {
+            padding: 15px;
+            background: rgba(255, 0, 0, 0.1);
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .video-number {
+            font-weight: bold;
+            color: #ff4444;
+            font-size: 1.3rem;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .instructions {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border-left: 5px solid #ff0000;
+        }
+        
+        .instructions h3 {
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        .note {
+            background: rgba(255, 100, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 100, 0, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>20 YouTube Videos on One Page</h1>
+            <p class="subtitle">Enter a YouTube video link and see it displayed 20 times on this page</p>
+        </header>
+        
+        <div class="url-input-section">
+            <h2>Enter YouTube Video URL</h2>
+            <p>Paste a YouTube video link below. The video will be embedded 20 times on this page.</p>
+            
+            <div class="input-group">
+                <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID">
+                <button id="load-videos">Load 20 Videos</button>
+            </div>
+        </div>
+        
+        <div class="video-grid" id="video-grid">
+            <!-- 20 video players will be inserted here -->
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Copy a YouTube video URL from your browser's address bar</li>
+                <li>Paste it into the input field above</li>
+                <li>Click "Load 20 Videos" to display the video 20 times on this page</li>
+                <li>Each video can be played independently</li>
+            </ol>
+            
+            <div class="note">
+                <strong>Note:</strong> You can use either the full YouTube URL (https://www.youtube.com/watch?v=...) or the shortened version (https://youtu.be/...). The video will automatically start at 20 seconds for each player.
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with HTML, CSS, and JavaScript | YouTube is a trademark of Google LLC</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoGrid = document.getElementById('video-grid');
+            const youtubeUrlInput = document.getElementById('youtube-url');
+            const loadVideosButton = document.getElementById('load-videos');
+            
+            // Example YouTube URL for initial demo
+            youtubeUrlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            
+            // Function to extract YouTube video ID from URL
+            function extractVideoId(url) {
+                // Handle different YouTube URL formats
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                const match = url.match(regExp);
+                
+                if (match && match[2].length === 11) {
+                    return match[2];
+                } else {
+                    // Try to extract from youtu.be format
+                    const youtuBeMatch = url.match(/youtu\.be\/([^#\&\?]*)/);
+                    if (youtuBeMatch && youtuBeMatch[1].length === 11) {
+                        return youtuBeMatch[1];
+                    }
+                }
+                
+                return null;
+            }
+            
+            // Function to create 20 video players
+            function createVideoPlayers(videoId) {
+                // Clear existing videos
+                videoGrid.innerHTML = '';
+                
+                // Create 20 video players
+                for (let i = 1; i <= 20; i++) {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'video-item';
+                    
+                    // Video header with number
+                    const videoHeader = document.createElement('div');
+                    videoHeader.className = 'video-header';
+                    videoHeader.innerHTML = `<span>Video Player</span> <span class="video-number">#${i}</span>`;
+                    
+                    // Video container with iframe
+                    const videoContainer = document.createElement('div');
+                    videoContainer.className = 'video-container';
+                    
+                    const iframe = document.createElement('iframe');
+                    // Start video at 20 seconds (t=20s)
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?start=20&rel=0&modestbranding=1`;
+                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    iframe.title = `YouTube Video Player ${i}`;
+                    
+                    videoContainer.appendChild(iframe);
+                    
+                    // Assemble the video item
+                    videoItem.appendChild(videoHeader);
+                    videoItem.appendChild(videoContainer);
+                    
+                    // Add to grid
+                    videoGrid.appendChild(videoItem);
+                }
+                
+                // Scroll to videos section
+                videoGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Load videos when button is clicked
+            loadVideosButton.addEventListener('click', function() {
+                const url = youtubeUrlInput.value.trim();
+                
+                if (!url) {
+                    alert('Please enter a YouTube URL');
+                    youtubeUrlInput.focus();
+                    return;
+                }
+                
+                const videoId = extractVideoId(url);
+                
+                if (!videoId) {
+                    alert('Invalid YouTube URL. Please check the URL and try again.');
+                    youtubeUrlInput.focus();
+                    return;
+                }
+                
+                createVideoPlayers(videoId);
+            });
+            
+            // Also allow pressing Enter in the input field
+            youtubeUrlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadVideosButton.click();
+                }
+            });
+            
+            // Load example video on initial page load
+            const initialVideoId = extractVideoId(youtubeUrlInput.value);
+            if (initialVideoId) {
+                createVideoPlayers(initialVideoId);
+            }
+        });
+    </script>
+</body>
+</html>
