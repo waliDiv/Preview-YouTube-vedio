@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>20 YouTube Videos on One Page</title>
+    <title>20 YouTube Videos Playing Simultaneously</title>
     <style>
         * {
             margin: 0;
@@ -13,54 +13,71 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
             color: #fff;
             line-height: 1.6;
-            padding: 20px;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
+            padding: 20px;
         }
         
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            background: rgba(255, 0, 0, 0.1);
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.3);
         }
         
         h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff0000, #ff8800);
+            background: linear-gradient(90deg, #ff0000, #ff8800, #ff0000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);
         }
         
         .subtitle {
             font-size: 1.2rem;
-            color: #aaa;
+            color: #ccc;
             margin-bottom: 20px;
         }
         
-        .url-input-section {
-            background: rgba(30, 30, 30, 0.8);
-            padding: 20px;
-            border-radius: 12px;
+        .highlight {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        
+        .control-panel {
+            background: rgba(30, 30, 30, 0.9);
+            padding: 25px;
+            border-radius: 15px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .url-input-section {
+            flex: 1;
+            min-width: 300px;
         }
         
         .input-group {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         
         input[type="text"] {
@@ -81,6 +98,11 @@
             box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
         }
         
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
         button {
             padding: 15px 30px;
             background: linear-gradient(90deg, #ff0000, #cc0000);
@@ -92,6 +114,9 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         button:hover {
@@ -100,11 +125,30 @@
             box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
         }
         
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button.secondary {
+            background: linear-gradient(90deg, #333, #555);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        button.secondary:hover {
+            background: linear-gradient(90deg, #444, #666);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .video-grid-container {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 25px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         
         .video-item {
@@ -112,17 +156,18 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
+            position: relative;
         }
         
-        .video-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+        .video-item.playing {
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+            border: 1px solid rgba(255, 0, 0, 0.3);
         }
         
         .video-header {
             padding: 15px;
-            background: rgba(255, 0, 0, 0.1);
+            background: rgba(255, 0, 0, 0.15);
             border-bottom: 1px solid #444;
             display: flex;
             justify-content: space-between;
@@ -133,6 +178,19 @@
             font-weight: bold;
             color: #ff4444;
             font-size: 1.3rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        
+        .video-status {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .video-status.playing {
+            color: #4CAF50;
+            font-weight: bold;
         }
         
         .video-container {
@@ -153,9 +211,9 @@
         }
         
         .instructions {
-            background: rgba(30, 30, 30, 0.8);
-            padding: 20px;
-            border-radius: 12px;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 25px;
+            border-radius: 15px;
             margin-top: 40px;
             border-left: 5px solid #ff0000;
         }
@@ -163,22 +221,38 @@
         .instructions h3 {
             color: #ff4444;
             margin-bottom: 15px;
+            font-size: 1.5rem;
         }
         
         .instructions ol {
-            padding-left: 20px;
+            padding-left: 25px;
+            margin-bottom: 20px;
         }
         
         .instructions li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            line-height: 1.8;
         }
         
-        .note {
-            background: rgba(255, 100, 0, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+        .warning {
+            background: rgba(255, 100, 0, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
             border: 1px solid rgba(255, 100, 0, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .warning-icon {
+            font-size: 2rem;
+            color: #ff8800;
+        }
+        
+        .warning-content h4 {
+            color: #ff8800;
+            margin-bottom: 8px;
         }
         
         footer {
@@ -190,7 +264,58 @@
             font-size: 0.9rem;
         }
         
-        @media (max-width: 1200px) {
+        .simultaneous-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            color: #ff4444;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        
+        @media (max-width: 1400px) {
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
             .video-grid {
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             }
@@ -198,15 +323,16 @@
         
         @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             
             .input-group {
                 flex-direction: column;
             }
             
-            button {
+            .control-buttons button {
                 width: 100%;
+                justify-content: center;
             }
             
             .video-grid {
@@ -215,53 +341,91 @@
         }
         
         @media (max-width: 480px) {
-            body {
+            .container {
                 padding: 10px;
             }
             
             .video-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .simultaneous-indicator {
+                top: 10px;
+                right: 10px;
+                font-size: 0.9rem;
+                padding: 8px 15px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="simultaneous-indicator">
+        <div class="pulse"></div>
+        <span>20 Videos Playing Together</span>
+    </div>
+    
     <div class="container">
         <header>
-            <h1>20 YouTube Videos on One Page</h1>
-            <p class="subtitle">Enter a YouTube video link and see it displayed 20 times on this page</p>
+            <h1>20 YouTube Videos Playing Simultaneously</h1>
+            <p class="subtitle">All 20 videos play together at the same time with <span class="highlight">full speed</span> and <span class="highlight">synchronized playback</span></p>
         </header>
         
-        <div class="url-input-section">
-            <h2>Enter YouTube Video URL</h2>
-            <p>Paste a YouTube video link below. The video will be embedded 20 times on this page.</p>
+        <div class="control-panel">
+            <div class="url-input-section">
+                <h2>Enter YouTube Video URL</h2>
+                <p>Paste a YouTube link and all 20 videos will play together simultaneously</p>
+                
+                <div class="input-group">
+                    <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID">
+                    <button id="load-videos">
+                        <span>Load 20 Videos</span>
+                    </button>
+                </div>
+            </div>
             
-            <div class="input-group">
-                <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID">
-                <button id="load-videos">Load 20 Videos</button>
+            <div class="control-buttons">
+                <button id="play-all">
+                    <span>▶</span>
+                    <span>Play All Simultaneously</span>
+                </button>
+                <button id="pause-all" class="secondary">
+                    <span>⏸</span>
+                    <span>Pause All</span>
+                </button>
             </div>
         </div>
         
-        <div class="video-grid" id="video-grid">
-            <!-- 20 video players will be inserted here -->
+        <div class="video-grid-container">
+            <h2>20 Simultaneous Video Players</h2>
+            <p>All videos will play together when you click "Play All Simultaneously"</p>
+            
+            <div class="video-grid" id="video-grid">
+                <!-- 20 video players will be inserted here -->
+            </div>
         </div>
         
         <div class="instructions">
-            <h3>How to use:</h3>
+            <h3>How to Use This Player</h3>
             <ol>
-                <li>Copy a YouTube video URL from your browser's address bar</li>
-                <li>Paste it into the input field above</li>
-                <li>Click "Load 20 Videos" to display the video 20 times on this page</li>
-                <li>Each video can be played independently</li>
+                <li><strong>Enter YouTube URL:</strong> Copy a YouTube video URL and paste it in the input field above</li>
+                <li><strong>Load Videos:</strong> Click "Load 20 Videos" to create 20 identical video players</li>
+                <li><strong>Play Simultaneously:</strong> Click "Play All Simultaneously" to start all 20 videos at exactly the same time</li>
+                <li><strong>Control Playback:</strong> Use "Pause All" to stop all videos together</li>
+                <li><strong>Individual Control:</strong> You can also control each video individually using its player controls</li>
             </ol>
             
-            <div class="note">
-                <strong>Note:</strong> You can use either the full YouTube URL (https://www.youtube.com/watch?v=...) or the shortened version (https://youtu.be/...). The video will automatically start at 20 seconds for each player.
+            <div class="warning">
+                <div class="warning-icon">⚠</div>
+                <div class="warning-content">
+                    <h4>Performance Note</h4>
+                    <p>Playing 20 videos simultaneously requires significant system resources. For best performance, use a powerful computer with good internet connection. You may need to lower the video quality in each player if you experience lag.</p>
+                </div>
             </div>
         </div>
         
         <footer>
-            <p>Created with HTML, CSS, and JavaScript | YouTube is a trademark of Google LLC</p>
+            <p>20 Simultaneous YouTube Video Player | Created with HTML, CSS & JavaScript</p>
+            <p>YouTube is a trademark of Google LLC. This tool is for educational purposes only.</p>
         </footer>
     </div>
 
@@ -270,6 +434,12 @@
             const videoGrid = document.getElementById('video-grid');
             const youtubeUrlInput = document.getElementById('youtube-url');
             const loadVideosButton = document.getElementById('load-videos');
+            const playAllButton = document.getElementById('play-all');
+            const pauseAllButton = document.getElementById('pause-all');
+            
+            // Store player objects
+            let players = [];
+            let videoId = null;
             
             // Example YouTube URL for initial demo
             youtubeUrlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
@@ -294,32 +464,34 @@
             }
             
             // Function to create 20 video players
-            function createVideoPlayers(videoId) {
+            function createVideoPlayers(vidId) {
+                videoId = vidId;
+                
                 // Clear existing videos
                 videoGrid.innerHTML = '';
+                players = [];
                 
                 // Create 20 video players
                 for (let i = 1; i <= 20; i++) {
                     const videoItem = document.createElement('div');
                     videoItem.className = 'video-item';
+                    videoItem.id = `video-item-${i}`;
                     
-                    // Video header with number
+                    // Video header with number and status
                     const videoHeader = document.createElement('div');
                     videoHeader.className = 'video-header';
-                    videoHeader.innerHTML = `<span>Video Player</span> <span class="video-number">#${i}</span>`;
+                    videoHeader.innerHTML = `
+                        <span>Video Player</span>
+                        <div>
+                            <span class="video-number">#${i}</span>
+                            <span class="video-status">Ready</span>
+                        </div>
+                    `;
                     
                     // Video container with iframe
                     const videoContainer = document.createElement('div');
                     videoContainer.className = 'video-container';
-                    
-                    const iframe = document.createElement('iframe');
-                    // Start video at 20 seconds (t=20s)
-                    iframe.src = `https://www.youtube.com/embed/${videoId}?start=20&rel=0&modestbranding=1`;
-                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    iframe.allowFullscreen = true;
-                    iframe.title = `YouTube Video Player ${i}`;
-                    
-                    videoContainer.appendChild(iframe);
+                    videoContainer.id = `player-${i}`;
                     
                     // Assemble the video item
                     videoItem.appendChild(videoHeader);
@@ -329,8 +501,89 @@
                     videoGrid.appendChild(videoItem);
                 }
                 
+                // Load the YouTube IFrame API
+                loadYouTubeAPI();
+                
                 // Scroll to videos section
                 videoGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Function to load YouTube IFrame API
+            function loadYouTubeAPI() {
+                // Load the IFrame Player API code asynchronously
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            }
+            
+            // YouTube API ready callback
+            window.onYouTubeIframeAPIReady = function() {
+                // Create 20 players
+                for (let i = 1; i <= 20; i++) {
+                    createPlayer(i);
+                }
+            };
+            
+            // Function to create a YouTube player
+            function createPlayer(playerIndex) {
+                const player = new YT.Player(`player-${playerIndex}`, {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    playerVars: {
+                        'autoplay': 0,
+                        'controls': 1,
+                        'rel': 0,
+                        'modestbranding': 1,
+                        'start': 0
+                    },
+                    events: {
+                        'onReady': function(event) {
+                            updatePlayerStatus(playerIndex, 'Ready');
+                            players[playerIndex - 1] = event.target;
+                            
+                            // If all players are ready, enable play button
+                            if (players.filter(p => p).length === 20) {
+                                playAllButton.disabled = false;
+                                pauseAllButton.disabled = false;
+                                playAllButton.innerHTML = '<span>▶</span><span>Play All Simultaneously</span>';
+                            }
+                        },
+                        'onStateChange': function(event) {
+                            // Update status based on player state
+                            const statusElement = document.querySelector(`#video-item-${playerIndex} .video-status`);
+                            const videoItem = document.getElementById(`video-item-${playerIndex}`);
+                            
+                            switch(event.data) {
+                                case YT.PlayerState.PLAYING:
+                                    updatePlayerStatus(playerIndex, 'Playing');
+                                    videoItem.classList.add('playing');
+                                    break;
+                                case YT.PlayerState.PAUSED:
+                                    updatePlayerStatus(playerIndex, 'Paused');
+                                    videoItem.classList.remove('playing');
+                                    break;
+                                case YT.PlayerState.ENDED:
+                                    updatePlayerStatus(playerIndex, 'Ended');
+                                    videoItem.classList.remove('playing');
+                                    break;
+                                case YT.PlayerState.BUFFERING:
+                                    updatePlayerStatus(playerIndex, 'Buffering...');
+                                    break;
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Function to update player status display
+            function updatePlayerStatus(playerIndex, status) {
+                const statusElement = document.querySelector(`#video-item-${playerIndex} .video-status`);
+                if (statusElement) {
+                    statusElement.textContent = status;
+                    statusElement.className = 'video-status ' + (status === 'Playing' ? 'playing' : '');
+                }
             }
             
             // Load videos when button is clicked
@@ -343,16 +596,106 @@
                     return;
                 }
                 
-                const videoId = extractVideoId(url);
+                const vidId = extractVideoId(url);
                 
-                if (!videoId) {
+                if (!vidId) {
                     alert('Invalid YouTube URL. Please check the URL and try again.');
                     youtubeUrlInput.focus();
                     return;
                 }
                 
-                createVideoPlayers(videoId);
+                // Disable buttons while loading
+                playAllButton.disabled = true;
+                pauseAllButton.disabled = true;
+                playAllButton.innerHTML = '<span>⏳</span><span>Loading 20 Players...</span>';
+                
+                createVideoPlayers(vidId);
             });
+            
+            // Play all videos simultaneously
+            playAllButton.addEventListener('click', function() {
+                if (players.length === 0 || players.some(p => !p)) {
+                    alert('Videos are still loading. Please wait.');
+                    return;
+                }
+                
+                // First, mute all players (required for autoplay in many browsers)
+                players.forEach((player, index) => {
+                    player.mute();
+                    updatePlayerStatus(index + 1, 'Starting...');
+                });
+                
+                // Play all videos simultaneously
+                setTimeout(() => {
+                    players.forEach((player, index) => {
+                        player.playVideo();
+                        player.unMute();
+                    });
+                    
+                    // Highlight all video items
+                    document.querySelectorAll('.video-item').forEach(item => {
+                        item.classList.add('playing');
+                    });
+                    
+                    // Show notification
+                    showNotification('All 20 videos are now playing simultaneously!');
+                }, 100);
+            });
+            
+            // Pause all videos
+            pauseAllButton.addEventListener('click', function() {
+                players.forEach((player, index) => {
+                    if (player && player.pauseVideo) {
+                        player.pauseVideo();
+                        updatePlayerStatus(index + 1, 'Paused');
+                    }
+                });
+                
+                // Remove highlight from all video items
+                document.querySelectorAll('.video-item').forEach(item => {
+                    item.classList.remove('playing');
+                });
+            });
+            
+            // Show notification function
+            function showNotification(message) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    right: 20px;
+                    background: rgba(255, 0, 0, 0.9);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+                    z-index: 1000;
+                    font-weight: bold;
+                    animation: slideIn 0.5s ease;
+                `;
+                
+                // Add keyframes for animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'slideIn 0.5s ease reverse';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+            }
             
             // Also allow pressing Enter in the input field
             youtubeUrlInput.addEventListener('keypress', function(e) {
@@ -364,7 +707,7 @@
             // Load example video on initial page load
             const initialVideoId = extractVideoId(youtubeUrlInput.value);
             if (initialVideoId) {
-                createVideoPlayers(initialVideoId);
+                loadVideosButton.click();
             }
         });
     </script>
